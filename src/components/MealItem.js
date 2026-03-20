@@ -4,49 +4,34 @@ import Button from './UI/Button';
 import { CartContext } from '../store/CartContext';
 
 function cartReducerFn(state, action) {
-    const [cart, meal, setCart] = state;
-
-    if (action.type === 'increment') {
-        const updatedMeals = [...cart.meals];
-        const mealIndex = updatedMeals.findIndex(item => item.name === meal.name);
-        
-        const updatedMeal = { 
-            ...updatedMeals[mealIndex], 
-            quantity: updatedMeals[mealIndex].quantity + 1 
-        };
-        updatedMeals[mealIndex] = updatedMeal;
-
-        const newCart = { ...cart, meals: updatedMeals };
-
-        setCart(newCart); 
-        return [newCart, meal, setCart];
-
-    } else if (action.type === 'add_to_cart') {
-        const newCart = { 
-            ...cart, 
-            meals: [...cart.meals, { ...meal, quantity: 1 }] 
-        };
-        
-        setCart(newCart);
-        return [newCart, meal, setCart];
+    if (action.type === 'UPDATE_CART') {
+        const [,, setCart] = state;
+        setCart(action.payload);
+        return [action.payload, state[1], setCart];
     }
-
     return state;
 }
 
 const MealItem = (props) => {
     const [cart, setCart] = useContext(CartContext);
-
     const [reducerState, dispatch] = useReducer(cartReducerFn, [cart, props.meal, setCart]);
 
     function onClick() {
-        const existingItem = cart.meals.find(value => props.meal.name === value.name);
-        
-        if (existingItem) {
-            dispatch({ type: 'increment' });
+        const existingMealIndex = cart.meals.findIndex(item => item.name === props.meal.name);
+        const updatedMeals = [...cart.meals];
+
+        if (existingMealIndex > -1) {
+            const updatedItem = {
+                ...updatedMeals[existingMealIndex],
+                quantity: updatedMeals[existingMealIndex].quantity + 1
+            };
+            updatedMeals[existingMealIndex] = updatedItem;
         } else {
-            dispatch({ type: 'add_to_cart' });
+            updatedMeals.push({ ...props.meal, quantity: 1 });
         }
+
+        const newCart = { ...cart, meals: updatedMeals };
+        dispatch({ type: 'UPDATE_CART', payload: newCart });
     }
 
     return (
