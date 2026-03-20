@@ -18,7 +18,7 @@ const MealItem = (props) => {
 
     function onClick() {
         const existingMealIndex = cart.meals.findIndex(item => item.name === props.meal.name);
-        const updatedMeals = [...cart.meals];
+        let updatedMeals = [...cart.meals];
 
         if (existingMealIndex > -1) {
             const updatedItem = {
@@ -31,6 +31,7 @@ const MealItem = (props) => {
         }
 
         const newCart = { ...cart, meals: updatedMeals };
+        
         dispatch({ type: 'UPDATE_CART', payload: newCart });
     }
 

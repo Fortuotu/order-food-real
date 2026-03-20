@@ -17,7 +17,7 @@ const Header = () => {
                 <h1>React Food Order App</h1>
             </div>
             <nav>
-            <Button onClick={() => console.log("cart click")} textOnly={true} text={`Cart ${totalCartItems}`}></Button>
+            <Button onClick={() => {}} textOnly={true} text={`Cart ${totalCartItems}`}></Button>
             </nav>
         </header>
     )
